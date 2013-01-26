@@ -39,7 +39,7 @@ package
 
     public function Player(X:Number,Y:Number):void {
       super(X,Y);
-      loadGraphic(Assets.Player, true, true, 20, 24);
+      loadGraphic(Assets.Player, true, true, 12, 12);
       addAnimation("idle", [0, 0, 0, 0, 0, 0, 1, 2, 3], 15, true);
       addAnimation("run", [6, 7, 8, 9, 10, 11], 15, true);
       addAnimation("run from landing", [8, 9, 10, 11, 6, 7], 15, true);
@@ -49,11 +49,11 @@ package
       addAnimation("jump land", [15], 15, false);
       play("idle");
 
-      width = 14;
-      height = 16;
+      width = 8;
+      height = 8;
 
-      offset.x = 5;
-      offset.y = 8;
+      offset.x = 2;
+      offset.y = 2;
 
       _speed = new FlxPoint();
       _speed.y = 250;

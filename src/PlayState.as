@@ -10,10 +10,9 @@ package
   public class PlayState extends FlxState
   {
     public static const SIN_RATE:Number = 0;
-    public static const HUE_RATE:Number = 50;
+    public static const HUE_RATE:Number = 100;
 
     private var palette:FlxSprite;
-    private var dingus:FlxSprite;
     private var sin:Number = 0;
     private var hue:Number = 0;
 
@@ -78,19 +77,8 @@ package
     override public function draw():void {
       super.draw();
 
-      hueShiftCamera(FlxG.camera);
+      //hueShiftCamera(FlxG.camera);
       aberrateCamera(FlxG.camera);
-      /*
-        var blueBuffer:BitmapData = new BitmapData(FlxG.camera.width, FlxG.camera.height, true, 0x00000000);
-        blueBuffer.copyChannel(buffer, sourceRect, new Point(4,5), BitmapDataChannel.ALPHA, BitmapDataChannel.ALPHA); 
-        blueBuffer.copyChannel(buffer, sourceRect, new Point(4,5), BitmapDataChannel.BLUE, BitmapDataChannel.BLUE); 
-        FlxG.camera.buffer.draw(blueBuffer, null, null, "add");
-
-        var greenBuffer:BitmapData = new BitmapData(FlxG.camera.width, FlxG.camera.height, true, 0x00000000);
-        greenBuffer.copyChannel(buffer, sourceRect, new Point(3,4), BitmapDataChannel.ALPHA, BitmapDataChannel.ALPHA); 
-        greenBuffer.copyChannel(buffer, sourceRect, new Point(3,4), BitmapDataChannel.GREEN, BitmapDataChannel.GREEN); 
-        FlxG.camera.buffer.draw(greenBuffer, null, null, "add");
-      */
     }
 
     protected function hueShiftCamera(camera:FlxCamera):void {
@@ -99,12 +87,11 @@ package
       for(var row:uint = 0; row < camera.height; row++) {
         for(var column:uint = 0; column < camera.width; column++) {
           colorIndex = colors.indexOf(camera.buffer.getPixel32(column,row));
-					if(colorIndex > -1) {
-						camera.buffer.setPixel32(column,row,shiftedColors[colorIndex]);
-					}
-				}
-			}
-      //
+          if(colorIndex > -1) {
+            camera.buffer.setPixel32(column,row,shiftedColors[colorIndex]);
+          }
+        }
+      }
     }
 
     protected function aberrateCamera(camera:FlxCamera):void {
