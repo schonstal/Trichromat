@@ -6,7 +6,7 @@ package
   {
     public function Preloader()
     {
-      className = "ChromaticGame";
+      className = "TerrenceGame";
       super();
     }
   }

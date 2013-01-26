@@ -5,6 +5,7 @@ package
   import flash.display.BitmapDataChannel;
   import flash.geom.Rectangle;
   import flash.geom.Point;
+  import components.MP3Pitch;
 
   public class PlayState extends FlxState
   {
@@ -16,9 +17,14 @@ package
     private var sin:Number = 0;
     private var hue:Number = 0;
 
+    private var pitchRate:Number = 0;
+    private var pitcher:MP3Pitch;
+
     private var colors:Array = [];
     private var shiftedColors:Array = [];
     private var shiftedHSB:Array = [];
+    
+    private var player:Player;
 
     override public function create():void {
       dingus = new FlxSprite();
@@ -27,6 +33,11 @@ package
       dingus.x = dingus.width*1.5;
       dingus.y = dingus.height*1.5;
       add(dingus);
+
+      player = new Player(0,0);
+      add(player);
+
+      pitcher = new MP3Pitch(Assets.Music);
 
       palette = new FlxSprite();
       palette.loadGraphic(Assets.CMY);
@@ -47,7 +58,13 @@ package
     }
 
     override public function update():void {
-      var hsb:Array;
+      pitcher.rate -= 0.0005;
+      updateEffects();
+
+      super.update();
+    }
+
+    protected function updateEffects():void {
       for (var i:int = 0; i < shiftedHSB.length; i++) {
         shiftedHSB[i][0] += FlxG.elapsed * HUE_RATE
         if(shiftedHSB[i][0] >= 360) {
@@ -56,12 +73,6 @@ package
 
         shiftedColors[i] = FlxU.makeColorFromHSB(shiftedHSB[i][0], shiftedHSB[i][1], shiftedHSB[i][2]);
       }
-
-      if(FlxG.keys.justPressed("SPACE")) {
-        FlxG.log(FlxG.camera.buffer.getPixel32(40,40));
-      }
-
-      super.update();
     }
 
     override public function draw():void {
