@@ -45,9 +45,15 @@ package
     }
 
     override public function update():void {
-      pitcher.rate = 2;
-      G.hueShift += 0.2;
-//      G.game.rotationZ = Math.sin(sin/8)/2;
+      if(FlxG.keys.UP) {
+        pitcher.rate -= 0.002;
+      } else {
+        pitcher.rate += 0.002;
+      } 
+      if(pitcher.rate > 1) pitcher.rate = 1;
+
+      G.hueShift += FlxG.elapsed * HUE_RATE;
+      G.game.rotationZ = Math.sin(sin/8)/2;
 
       super.update();
 
@@ -63,7 +69,7 @@ package
     override public function draw():void {
       super.draw();
 
-      aberrateCamera(FlxG.camera);
+      //aberrateCamera(FlxG.camera);
     }
 
     protected function aberrateCamera(camera:FlxCamera):void {
@@ -77,12 +83,12 @@ package
       var channels:Array = [BitmapDataChannel.RED, BitmapDataChannel.BLUE, BitmapDataChannel.GREEN];
       var offsets:Object = {};
       offsets[BitmapDataChannel.RED] = new Point(0,0);
-      offsets[BitmapDataChannel.BLUE] = new Point(1,0);
-      offsets[BitmapDataChannel.GREEN] = new Point(0,1);
+      offsets[BitmapDataChannel.BLUE] = new Point(3,0);
+      offsets[BitmapDataChannel.GREEN] = new Point(1,3);
      
       for each(var channel:uint in channels) { 
         colorBuffer = new BitmapData(camera.width, camera.height, true, 0x00000000);
-        var point:Point = new Point(Math.sin(0) * 1 + offsets[channel].x, Math.cos(0) * 1 + offsets[channel].y);
+        var point:Point = new Point(Math.sin(G.hueShift *  0.0175)*2 + offsets[channel].x, Math.cos(G.hueShift *  0.0175)*2 + offsets[channel].y);
          
         colorBuffer.copyChannel(buffer,
           sourceRect,
