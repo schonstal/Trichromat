@@ -25,6 +25,7 @@ package
     
     private var player:Player;
     private var terrain:TerrainGroup;
+    private var lava:LavaGroup;
 
     override public function create():void {
       FlxG.camera.x = -32;
@@ -35,6 +36,9 @@ package
 
       terrain = new TerrainGroup();
       add(terrain);
+      
+      lava = new LavaGroup();
+      add(lava);
 
       pitcher = new MP3Pitch(Assets.Music);
 
