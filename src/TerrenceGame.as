@@ -11,6 +11,7 @@ package
       forceDebugger = true;
       FlxG.debug = true;
       FlxG.visualDebug = true;
+      G.game = this;
 //      rotationZ = 1;
     }
   }

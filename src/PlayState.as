@@ -59,6 +59,7 @@ package
     override public function update():void {
       pitcher.rate = 2;
       updateEffects();
+//      G.game.rotationZ = Math.sin(sin/8)/2;
 
       super.update();
 
@@ -117,8 +118,8 @@ package
       offsets[BitmapDataChannel.GREEN] = new Point(0,1);
      
       for each(var channel:uint in channels) { 
-        colorBuffer = new BitmapData(camera.width, camera.height, true, 0x00000000);       
-        var point:Point = new Point(Math.sin(channel + sin) * 1 + offsets[channel].x, Math.cos(channel + sin) * 1 + offsets[channel].y);
+        colorBuffer = new BitmapData(camera.width, camera.height, true, 0x00000000);
+        var point:Point = new Point(Math.sin(0) * 1 + offsets[channel].x, Math.cos(0) * 1 + offsets[channel].y);
          
         colorBuffer.copyChannel(buffer,
           sourceRect,

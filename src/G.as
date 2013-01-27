@@ -5,6 +5,7 @@ package
     public class G
     {
         public var _paused:Boolean;
+        public var _game:FlxGame;
 
         private static var _instance:G = null;
 
@@ -26,6 +27,14 @@ package
 
         public static function set paused(value:Boolean):void {
           instance._paused = value;
+        }
+
+        public static function get game():FlxGame {
+          return instance._game;
+        }
+
+        public static function set game(value:FlxGame):void {
+          instance._game = value;
         }
     }
 }
