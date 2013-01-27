@@ -36,19 +36,19 @@ package
     private var score:uint = 0;
 
     public function get hueRate():Number {
-      return score * 5;
+      return score * 7.5;
     }
 
     public function get aberrationLevel():Number {
-      return score/10;
+      return score/20;
     }
 
     public function get aberrationAmount():Number {
-      return glitchTimer * 3;
+      return glitchTimer;
     }
 
     public function get tiltRate():Number {
-      return score/10;
+      return score/5;
     }
 
     public function get pitch():Number {
@@ -70,6 +70,13 @@ package
       geyser.play("squirt");
       geyser.scrollFactor.y = 0;
       add(geyser);
+
+      var river:FlxSprite = new FlxSprite(66, 21);
+      river.loadGraphic(Assets.LavaRivulets, true, false, 33, 28);
+      river.addAnimation("move", [0,1,2], 5);
+      river.play("move");
+      river.scrollFactor.y = 0;
+      add(river);
 
       player = new Player();
       add(player);
@@ -172,15 +179,21 @@ package
       var colorBuffer:BitmapData;
       var channels:Array = [BitmapDataChannel.RED, BitmapDataChannel.BLUE, BitmapDataChannel.GREEN];
       var offsets:Object = {};
-      offsets[BitmapDataChannel.RED] = new Point(0,0);
-      offsets[BitmapDataChannel.BLUE] = new Point(3 * aberrationLevel,0);
-      offsets[BitmapDataChannel.GREEN] = new Point(1 * aberrationLevel, 3 * aberrationLevel);
+      offsets[BitmapDataChannel.RED] = new Point(
+        1.5 * (aberrationLevel + aberrationAmount),
+        0);
+      offsets[BitmapDataChannel.BLUE] = new Point(
+        -2 * (aberrationLevel + aberrationAmount), 
+        2 * (aberrationLevel + aberrationAmount));
+      offsets[BitmapDataChannel.GREEN] = new Point(
+        -2 * (aberrationLevel + aberrationAmount),
+        -2 * (aberrationLevel + aberrationAmount));
      
       for each(var channel:uint in channels) { 
         colorBuffer = new BitmapData(camera.width, camera.height, true, 0x00000000);
         var point:Point = new Point(
-          Math.sin(G.hueShift *  0.0175) * (aberrationAmount + aberrationLevel) + offsets[channel].x,
-          Math.cos(G.hueShift *  0.0175) * (aberrationAmount + aberrationLevel) + offsets[channel].y);
+          (Math.sin(G.hueShift *  0.0175) * (aberrationAmount + aberrationLevel)) + offsets[channel].x,
+          (Math.cos(G.hueShift *  0.0175) * (aberrationAmount + aberrationLevel)) + offsets[channel].y);
          
         colorBuffer.copyChannel(buffer,
           sourceRect,

@@ -12,6 +12,7 @@ package
     [Embed(source = "../data/gemGood.png")] public static var GemGood:Class;
     [Embed(source = "../data/gemBad.png")] public static var GemBad:Class;
     [Embed(source = "../data/lavaGeyser.png")] public static var LavaGeyser:Class;
+    [Embed(source = "../data/lavaRivulets.png")] public static var LavaRivulets:Class;
 
     [Embed(source = "../data/test.mp3")] public static var Music:Class;
 
