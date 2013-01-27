@@ -49,13 +49,14 @@ package
       addAnimation("jump peak", [13], 15, true);
       addAnimation("jump fall", [14], 15, true);
       addAnimation("jump land", [15], 15, false);
+      addAnimation("die", [18]);
       play("idle");
 
       width = 8;
-      height = 8;
+      height = 11;
 
+      offset.y = 1;
       offset.x = 2;
-      offset.y = 2;
 
       _speed = new FlxPoint();
       _speed.y = 215;
@@ -90,7 +91,6 @@ package
       exists = true;
 
       facing = RIGHT;
-      offset.x = 5;
     }
 
     public function playRunAnim():void {
@@ -135,12 +135,10 @@ package
 
         if(FlxG.keys.A || FlxG.keys.LEFT) {
           acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);
-          offset.x = 1;
           facing = LEFT;
           playRunAnim();
         } else if(FlxG.keys.D || FlxG.keys.RIGHT) {
           acceleration.x = _speed.x * (velocity.x < 0 ? 4 : 1);
-          offset.x = 5;
           facing = RIGHT;
           playRunAnim();
         } else if (Math.abs(velocity.x) < 50) {
@@ -169,7 +167,7 @@ package
         }
 
         if(velocity.y < -1) {
-          if(jumpPressed() && velocity.y > -100) {
+          if(jumpPressed() && velocity.y > -25) {
             play("jump peak");
           }
         } else if (velocity.y > 1) {
