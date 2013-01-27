@@ -11,17 +11,23 @@ package
   {
     public static const SIN_RATE:Number = 10;
     public static const HUE_RATE:Number = 100;
+    public static const MUSIC_DEATH_RATE:Number = 0.75;
+
+    public static const MAX_SINK_RATE:Number = 5;
 
     private var palette:FlxSprite;
     private var sin:Number = 0;
 
     private var pitchRate:Number = 0;
-    private var pitcher:MP3Pitch;
+
+    private var sinkRate:Number = 2;
 
     private var player:Player;
     private var terrain:TerrainGroup;
     private var lava:LavaGroup;
     private var background:FlxSprite;
+
+    private var starting:Boolean = true;
 
     override public function create():void {
       FlxG.camera.x = -32;
@@ -29,6 +35,7 @@ package
 
       background = new FlxSprite();
       background.loadGraphic(Assets.Background);
+      background.scrollFactor.y = 0;
       add(background);
 
       player = new Player(0,0);
@@ -40,33 +47,45 @@ package
       lava = new LavaGroup();
       add(lava);
 
-      pitcher = new MP3Pitch(Assets.Music);
+      if(G.started) FlxG.flash(0xff000000);
 
+      G.started = true;
     }
 
     override public function update():void {
-      if(FlxG.keys.UP) {
-        pitcher.rate -= 0.002;
-      } else {
-        pitcher.rate += 0.002;
-      } 
-      if(pitcher.rate > 1) pitcher.rate = 1;
-
       G.hueShift += FlxG.elapsed * HUE_RATE;
       G.game.rotationZ = Math.sin(sin/8)/2;
+      if(starting) {
+        G.pitcher.rate += FlxG.elapsed * MUSIC_DEATH_RATE * 2;
+        if(G.pitcher.rate >= 1) {
+          G.pitcher.rate = 1;
+          starting = false;
+        }
+      }
+
+      FlxG.camera.scroll.y -= FlxG.elapsed * sinkRate;
 
       super.update();
 
       player.resetFlags();
 
-      FlxG.collide(player, terrain, function(player:Player, tile:FlxObject):void {
-        if(tile.touching & FlxObject.UP) {
-          player.setCollidesWith(Player.WALL_UP);
-        }
-      });
+      if(!player.dead) {
+        FlxG.collide(player, terrain, function(player:Player, tile:FlxObject):void {
+          if(tile.touching & FlxObject.UP) {
+            player.setCollidesWith(Player.WALL_UP);
+          }
+        });
 
-      if(!player.dead && player.y + player.height >= lava.y) {
-        player.die();
+        if(player.y + player.height - FlxG.camera.scroll.y >= lava.y + 3) {
+          player.die();
+        }
+      } else {
+        G.pitcher.rate -= FlxG.elapsed * MUSIC_DEATH_RATE;
+        if(player.y > FlxG.camera.height - FlxG.camera.scroll.y) {
+          FlxG.fade(0xff000000,0.5,function():void {
+            FlxG.switchState(new PlayState());
+          });
+        }
       }
     }
 

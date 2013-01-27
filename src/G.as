@@ -1,12 +1,15 @@
 package
 {
     import org.flixel.*;
+    import components.MP3Pitch;
 
     public class G
     {
         public var _paused:Boolean;
+        public var _started:Boolean;
         public var _game:FlxGame;
         public var _hueShift:Number;
+        public var _mp3Pitch:MP3Pitch;
 
         private static var _instance:G = null;
 
@@ -18,6 +21,7 @@ package
                 _instance = new G();
                 _instance._paused = false;
                 _instance._hueShift = 0;
+                _instance._started = false;
             }
 
             return _instance;
@@ -29,6 +33,14 @@ package
 
         public static function set paused(value:Boolean):void {
           instance._paused = value;
+        }
+
+        public static function get started():Boolean {
+          return instance._started;
+        }
+
+        public static function set started(value:Boolean):void {
+          instance._started = value;
         }
 
         public static function get game():FlxGame {
@@ -45,6 +57,14 @@ package
 
         public static function set hueShift(value:Number):void {
           instance._hueShift = value;
+        }
+
+        public static function get pitcher():MP3Pitch {
+          return instance._mp3Pitch;
+        }
+
+        public static function set pitcher(value:MP3Pitch):void {
+          instance._mp3Pitch = value;
         }
     }
 }

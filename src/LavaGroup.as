@@ -15,6 +15,7 @@ package
       for(var i:int = 0; i <= FlxG.width/4; i++) {
         var lava:FlxSprite = new FlxSprite((i*4) - 2, y);
         lava.loadGraphic(Assets.Lava, false, false, 0, 0, true);
+        lava.scrollFactor.y = 0;
         add(lava);
       }
     }

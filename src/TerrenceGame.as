@@ -1,6 +1,8 @@
 package
 {
   import org.flixel.*;
+  import components.MP3Pitch;
+
   [SWF(width="640", height="480", backgroundColor="#000000")]
   [Frame(factoryClass="Preloader")]
 
@@ -11,6 +13,7 @@ package
       forceDebugger = true;
       FlxG.debug = true;
       G.game = this;
+      G.pitcher = new MP3Pitch(Assets.Music);
 //      FlxG.visualDebug = true;
 //      rotationZ = 1;
     }
