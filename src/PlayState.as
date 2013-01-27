@@ -9,7 +9,7 @@ package
 
   public class PlayState extends FlxState
   {
-    public static const SIN_RATE:Number = 0;
+    public static const SIN_RATE:Number = 10;
     public static const HUE_RATE:Number = 100;
 
     private var palette:FlxSprite;
@@ -24,22 +24,22 @@ package
     private var shiftedHSB:Array = [];
     
     private var player:Player;
+    private var terrain:TerrainGroup;
 
     override public function create():void {
-      dingus = new FlxSprite();
-      dingus.loadGraphic(Assets.CMY);
-      dingus.scale = new FlxPoint(4,4);
-      dingus.x = dingus.width*1.5;
-      dingus.y = dingus.height*1.5;
-      add(dingus);
+      FlxG.camera.x = -32;
+      FlxG.camera.y = -32;
 
       player = new Player(0,0);
       add(player);
 
+      terrain = new TerrainGroup();
+      add(terrain);
+
       pitcher = new MP3Pitch(Assets.Music);
 
       palette = new FlxSprite();
-      palette.loadGraphic(Assets.CMY);
+      palette.loadGraphic(Assets.Terrain);
       for(var x:int = 0; x < palette.width; x++) {
         for(var y:int = 0; y < palette.height; y++) {
           var pixel:uint = palette.pixels.getPixel32(x, y);
@@ -59,6 +59,7 @@ package
     override public function update():void {
       pitcher.rate -= 0.0005;
       updateEffects();
+      FlxG.collide(player, terrain);
 
       super.update();
     }
@@ -78,7 +79,7 @@ package
       super.draw();
 
       //hueShiftCamera(FlxG.camera);
-      aberrateCamera(FlxG.camera);
+      //aberrateCamera(FlxG.camera);
     }
 
     protected function hueShiftCamera(camera:FlxCamera):void {

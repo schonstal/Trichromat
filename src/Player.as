@@ -13,7 +13,7 @@ package
     public static var WALL:uint = WALL_LEFT|WALL_RIGHT|WALL_UP;
 
     private var _speed:FlxPoint;
-    private var _gravity:Number = 800; 
+    private var _gravity:Number = 200; 
 
     private var _jumpPressed:Boolean = false;
     private var _grounded:Boolean = false;

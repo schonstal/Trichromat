@@ -7,9 +7,10 @@ package
   public class TerrenceGame extends FlxGame
   {
     public function TerrenceGame() {
-      super(176,136,PlayState,2);
+      super(176,136,PlayState,4);
       forceDebugger = true;
       FlxG.debug = true;
+//      FlxG.visualDebug = true;
 //      rotationZ = 1;
     }
   }
