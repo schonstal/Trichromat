@@ -26,10 +26,15 @@ package
     private var player:Player;
     private var terrain:TerrainGroup;
     private var lava:LavaGroup;
+    private var background:FlxSprite;
 
     override public function create():void {
       FlxG.camera.x = -32;
       FlxG.camera.y = -32;
+
+      background = new FlxSprite();
+      background.loadGraphic(Assets.Background);
+      add(background);
 
       player = new Player(0,0);
       add(player);
