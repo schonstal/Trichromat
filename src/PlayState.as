@@ -40,16 +40,19 @@ package
       background.scrollFactor.y = 0;
       add(background);
 
-      player = new Player(0,0);
+      player = new Player();
       add(player);
 
       gems = new GemGroup();
       add(gems);
       
-      gems.goodGem.spawn(50, 50);
+      gems.badGem.spawn(28, 27);
+      gems.goodGem.spawn(140, 27);
 
       terrain = new TerrainGroup();
       add(terrain);
+
+      //gems.spawn(terrain.spawnZones, player);
 
       lava = new LavaGroup();
       add(lava);
@@ -82,6 +85,10 @@ package
           if(tile.touching & FlxObject.UP) {
             player.setCollidesWith(Player.WALL_UP);
           }
+        });
+
+        FlxG.overlap(player, gems, function(player:Player, gem:GemSprite):void {
+          gem.collect();
         });
 
         if(player.y + player.height - FlxG.camera.scroll.y >= lava.y + 3) {

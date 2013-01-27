@@ -29,7 +29,11 @@ package
       for each(var hitBox:FlxObject in zones) {
         hitBox.immovable = true;
         add(hitBox);
-        spawnZone = new FlxObject(hitBox.x, hitBox.y - 8, hitBox.width, hitBox.height);
+        spawnZone = new FlxObject(
+          hitBox.x + (hitBox.x == 0 ? 8 : 4),
+          hitBox.y - 8,
+          hitBox.width - (hitBox.x == 128 && hitBox.width == 104 ? 12 : 8),
+          hitBox.height);
         spawnZone.immovable = true;
         spawnZones.add(spawnZone);
       }

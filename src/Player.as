@@ -4,8 +4,8 @@ package
 
   public class Player extends FlxSprite
   {
-    public static const START_X:Number = 18;
-    public static const START_Y:Number = 160;
+    public static const START_X:Number = 84;
+    public static const START_Y:Number = 64;
 
     public static const WALL_LEFT:uint = 1 << 1;
     public static const WALL_RIGHT:uint = 1 << 2;
@@ -46,7 +46,7 @@ package
     private var deadThreshold:Number = 0.4;
     private var flying = false;
 
-    public function Player(X:Number,Y:Number):void {
+    public function Player(X:Number=START_X,Y:Number=START_Y):void {
       super(X,Y);
       loadGraphic(Assets.Player, true, true, 12, 12);
       addAnimation("idle", [0, 0, 0, 0, 0, 0, 1, 2, 3], 15, true);

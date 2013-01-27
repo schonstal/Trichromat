@@ -1,0 +1,45 @@
+package
+{
+  import org.flixel.*;
+
+  public class GemGroup extends FlxGroup
+  {
+    public var badGem:GemSprite;
+    public var goodGem:GemSprite;
+
+    public function GemGroup():void {
+      goodGem = new GemSprite(true);
+      add(goodGem);
+
+      badGem = new GemSprite(false);
+      add(badGem);
+    }
+
+    public function spawn(spawnZones:FlxGroup, player:Player) {
+      var acceptableZones:Array = [];
+      FlxG.log(spawnZones.members);
+      for(var i:uint = 0; i < spawnZones.members.length; i++) {
+        if(spawnZones.members[i] is FlxObject &&
+            spawnZones.members[i].x > 0 &&
+            spawnZones.members[i].y > 0 &&
+            !FlxG.overlap(spawnZones.members[i], player)) {
+          acceptableZones.push(spawnZones.members[i]);
+        }
+      }
+
+      var zoneIndex:uint = Math.floor(acceptableZones.length * Math.random());
+      var zone:FlxObject = acceptableZones[zoneIndex];
+      goodGem.spawn(zone.x + (Math.random() * (zone.width - 8)), zone.y - 4);
+      FlxG.log("" + zoneIndex + ": " + zone.x);
+ 
+      var previousZone:uint = zoneIndex;
+      do {
+        zoneIndex = Math.floor(acceptableZones.length * Math.random());
+      } while (zoneIndex == previousZone);
+
+      zone = acceptableZones[zoneIndex];
+      badGem.spawn(zone.x + (Math.random() * (zone.width - 8)), zone.y - 4);
+      FlxG.log("" + zoneIndex + ": " + zone.x);
+    }
+  }
+}
