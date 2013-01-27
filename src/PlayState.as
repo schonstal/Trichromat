@@ -12,6 +12,7 @@ package
     public static const SIN_RATE:Number = 10;
     public static const HUE_RATE:Number = 100;
     public static const MUSIC_DEATH_RATE:Number = 0.75;
+    public static const GEM_SCROLL:Number = 3;
 
     public static const MAX_SINK_RATE:Number = 7;
 
@@ -52,8 +53,6 @@ package
       terrain = new TerrainGroup();
       add(terrain);
 
-      //gems.spawn(terrain.spawnZones, player);
-
       lava = new LavaGroup();
       add(lava);
 
@@ -88,7 +87,15 @@ package
         });
 
         FlxG.overlap(player, gems, function(player:Player, gem:GemSprite):void {
-          gem.collect();
+            if(gem == gems.goodGem) {
+              if(gem.idle) {
+                gem.collect(function():void { gems.spawn(terrain.spawnZones, player); });
+                FlxG.camera.scroll.y += GEM_SCROLL;
+                score++;
+              }
+            } else {
+              player.die();
+            }
         });
 
         if(player.y + player.height - FlxG.camera.scroll.y >= lava.y + 3) {
@@ -102,6 +109,8 @@ package
           });
         }
       }
+
+      if(FlxG.camera.scroll.y > 0) FlxG.camera.scroll.y = 0;
     }
 
     override public function draw():void {

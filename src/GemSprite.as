@@ -6,15 +6,16 @@ package
   {
     public static const SIN_RATE:Number = 3;
     public static const OSC_AMT:Number = 2;
+    public var idle:Boolean = false;
 
     private var sin:Number = 0;
-    private var idle:Boolean = false;
+    private var collectFinishCallback:Function;
 
     public function GemSprite(good:Boolean):void {
       loadGraphic(good ? Assets.GemGood : Assets.GemBad, true, false, 8, 8);
       addAnimation("appear", [2,1,2,1,2,1,3,4,5,6], 15, false);
       addAnimation("idle", [0,0,0,0,0,7,8,9,10], 10);
-      addAnimation("disappear", [1,2,1,2,1,2], 15, false);
+      addAnimation("disappear", [1,2,1,2,1,2,2], 15, false);
       addAnimationCallback(onAnimate);
       visible = false;
     }
@@ -29,9 +30,12 @@ package
       play("appear");
     }
 
-    public function collect():void {
-      idle = false;
-      play("disappear");
+    public function collect(callback:Function=null):void {
+      if(idle) {
+        collectFinishCallback = callback;
+        idle = false;
+        play("disappear");
+      }
     }
 
     public override function update():void {
@@ -45,6 +49,9 @@ package
       if(frameIndex == 6) {
         play("idle");
         idle = true;
+      }
+      if(frameNumber == 6 && name == "disappear") {
+        if(collectFinishCallback != null) collectFinishCallback();
       }
     }
   }
