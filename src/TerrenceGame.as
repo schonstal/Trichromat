@@ -10,7 +10,7 @@ package
       super(176,136,PlayState,4);
       forceDebugger = true;
       FlxG.debug = true;
-//      FlxG.visualDebug = true;
+      FlxG.visualDebug = true;
 //      rotationZ = 1;
     }
   }

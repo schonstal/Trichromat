@@ -57,11 +57,18 @@ package
     }
 
     override public function update():void {
-      pitcher.rate -= 0.0005;
+      pitcher.rate = 2;
       updateEffects();
-      FlxG.collide(player, terrain);
 
       super.update();
+
+      player.resetFlags();
+
+      FlxG.collide(player, terrain, function(player:Player, tile:FlxObject):void {
+        if(tile.touching & FlxObject.UP) {
+          player.setCollidesWith(Player.WALL_UP);
+        }
+      });
     }
 
     protected function updateEffects():void {
@@ -78,8 +85,8 @@ package
     override public function draw():void {
       super.draw();
 
-      //hueShiftCamera(FlxG.camera);
-      //aberrateCamera(FlxG.camera);
+      hueShiftCamera(FlxG.camera);
+      aberrateCamera(FlxG.camera);
     }
 
     protected function hueShiftCamera(camera:FlxCamera):void {
@@ -106,8 +113,8 @@ package
       var channels:Array = [BitmapDataChannel.RED, BitmapDataChannel.BLUE, BitmapDataChannel.GREEN];
       var offsets:Object = {};
       offsets[BitmapDataChannel.RED] = new Point(0,0);
-      offsets[BitmapDataChannel.BLUE] = new Point(3,0);
-      offsets[BitmapDataChannel.GREEN] = new Point(1,3);
+      offsets[BitmapDataChannel.BLUE] = new Point(1,0);
+      offsets[BitmapDataChannel.GREEN] = new Point(0,1);
      
       for each(var channel:uint in channels) { 
         colorBuffer = new BitmapData(camera.width, camera.height, true, 0x00000000);       

@@ -12,8 +12,10 @@ package
     public static const WALL_UP:uint = 1 << 3;
     public static var WALL:uint = WALL_LEFT|WALL_RIGHT|WALL_UP;
 
+    public static const RUN_SPEED:Number = 100;
+
     private var _speed:FlxPoint;
-    private var _gravity:Number = 200; 
+    private var _gravity:Number = 600; 
 
     private var _jumpPressed:Boolean = false;
     private var _grounded:Boolean = false;
@@ -56,13 +58,13 @@ package
       offset.y = 2;
 
       _speed = new FlxPoint();
-      _speed.y = 250;
-      _speed.x = 1000;
+      _speed.y = 215;
+      _speed.x = 800;
 
       acceleration.y = _gravity;
 
-      maxVelocity.y = 400;
-      maxVelocity.x = 300;
+      maxVelocity.y = 325;
+      maxVelocity.x = RUN_SPEED;
     }
 
     public function init():void {
@@ -105,13 +107,13 @@ package
         if(FlxG.keys.justPressed("W") || FlxG.keys.justPressed("UP")) {
           _jumpPressed = true;
           jumpTimer = 0;
+          _grounded = false;
         }
         if(jumpTimer > jumpThreshold) {
           _jumpPressed = false;
         }
 
         if(collidesWith(WALL_UP)) {
-          maxVelocity.x = 200;
           if(!_grounded) {
             play("jump land");
             _landing = true;
@@ -190,6 +192,9 @@ package
           acceleration.y = _gravity;
       }
       super.update();
+
+      if(x < 0) x = FlxG.camera.width - width;
+      if(x + width > FlxG.camera.width) x = 0;
     }
 
     public function jumpPressed():Boolean {
