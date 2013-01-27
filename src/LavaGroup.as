@@ -9,7 +9,7 @@ package
     public const SIN_OFFSET:Number = 1;
 
     private var sinAmount:Number = 0;
-    private var y:Number = FlxG.height - 16;
+    private var y:Number = FlxG.height - 30;
 
     public function LavaGroup():void {
       for(var i:int = 0; i <= FlxG.width/4; i++) {
