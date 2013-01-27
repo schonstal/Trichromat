@@ -35,9 +35,16 @@ package
     private var jumpTimer:Number = 0;
     private var jumpThreshold:Number = 0.1;
 
+    public var dead:Boolean = false;
+
     public var lockedToFlags:uint = 0;
 
     public var jumpAmount:Number = 300;
+
+
+    private var deadTimer:Number = 0;
+    private var deadThreshold:Number = 0.4;
+    private var flying = false;
 
     public function Player(X:Number,Y:Number):void {
       super(X,Y);
@@ -101,7 +108,7 @@ package
     }
 
     override public function update():void {
-      if(!G.paused) {
+      if(!dead) {
         //Check for jump input, allow for early timing
         jumpTimer += FlxG.elapsed;
         if(FlxG.keys.justPressed("W") || FlxG.keys.justPressed("UP")) {
@@ -188,6 +195,13 @@ package
           acceleration.y = _gravity * 3;
         else
           acceleration.y = _gravity;
+      } else {
+        deadTimer += FlxG.elapsed;
+        if(deadTimer >= deadThreshold && !flying) {
+          velocity.y = -125;
+          acceleration.y = 400;
+          flying = true;
+        }
       }
       super.update();
 
@@ -201,6 +215,13 @@ package
 
     public function resetFlags():void {
       collisionFlags = 0;
+    }
+
+    public function die():void {
+      play("die");
+      deadTimer = 0;
+      dead = true;
+      acceleration.y = acceleration.x = velocity.x = velocity.y = 0;
     }
 
     public function setCollidesWith(bits:uint):void {

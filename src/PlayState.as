@@ -64,6 +64,10 @@ package
           player.setCollidesWith(Player.WALL_UP);
         }
       });
+
+      if(!player.dead && player.y + player.height >= lava.y) {
+        player.die();
+      }
     }
 
     override public function draw():void {
