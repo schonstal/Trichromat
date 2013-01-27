@@ -154,6 +154,54 @@ package org.flixel
 		 * Internal, helps with animation, caching and drawing.
 		 */
 		protected var _matrix:Matrix;
+
+    private var baseMap:Array;
+    private var mappedImage:BitmapData;
+    private var _hueShift:Number = 0;
+
+    public function get hueShift():Number {
+            return _hueShift;
+    }
+   
+    public function set hueShift(val:Number):void {
+            _hueShift = val;
+            if (baseMap == null) { precompute(); }
+            calcShifted();
+    }
+    public function precompute():void {
+      baseMap = [];
+      var allPixels:Vector.<uint> = _pixels.getVector(_pixels.rect);
+      mappedImage = new BitmapData(_pixels.width, _pixels.height, true, 0x00000000);
+      var mappedPixels:Vector.<uint> = mappedImage.getVector(mappedImage.rect);
+      for (var i:int = 0; i < allPixels.length; i++) {
+              var mapIndex:int = baseMap.indexOf(allPixels[i]);
+              if (mapIndex == -1) {
+                      baseMap.push(allPixels[i]);
+                      mapIndex = baseMap.length - 1;
+              }
+              var alpha:int = FlxU.getRGBA(allPixels[i])[3];
+              var gray:uint = FlxU.makeColor(mapIndex, mapIndex, mapIndex, alpha);
+              mappedPixels[i] = gray;
+      }
+      mappedImage.setVector(mappedImage.rect, mappedPixels);         
+    }
+
+    public function calcShifted():void {
+      var reds:Array = [];
+      var greens:Array = [];
+      var blues:Array = [];
+      for (var i:int = 0; i < baseMap.length; i++) {
+              var hsb:Array = FlxU.getHSB(baseMap[i]);
+              hsb[0] = (hsb[0] + hueShift) % 360;
+             
+              reds.push(FlxU.makeColorFromHSB(hsb[0], hsb[1], hsb[2], hsb[3]));
+              greens.push(0);
+              blues.push(0);
+      }
+     
+      _pixels.paletteMap(mappedImage, mappedImage.rect, new Point(0, 0), reds, greens, blues);
+      this.calcFrame();                      
+    }
 		
 		/**
 		 * Creates a white 8x8 square <code>FlxSprite</code> at the specified position.
@@ -415,6 +463,7 @@ package org.flixel
 		{
 			super.postUpdate();
 			updateAnimation();
+      hueShift = G.hueShift;
 		}
 		
 		/**
