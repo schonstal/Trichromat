@@ -25,6 +25,7 @@ package
     private var terrain:TerrainGroup;
     private var lava:LavaGroup;
     private var background:FlxSprite;
+    private var gems:GemGroup; 
 
     private var starting:Boolean = true;
 
@@ -42,9 +43,14 @@ package
       player = new Player(0,0);
       add(player);
 
+      gems = new GemGroup();
+      add(gems);
+      
+      gems.goodGem.spawn(50, 50);
+
       terrain = new TerrainGroup();
       add(terrain);
-      
+
       lava = new LavaGroup();
       add(lava);
 
