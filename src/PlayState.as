@@ -69,7 +69,7 @@ package
     override public function draw():void {
       super.draw();
 
-      aberrateCamera(FlxG.camera);
+      //aberrateCamera(FlxG.camera);
     }
 
     protected function aberrateCamera(camera:FlxCamera):void {

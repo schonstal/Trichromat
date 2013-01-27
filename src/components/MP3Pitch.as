@@ -34,6 +34,7 @@ package components
 
 			_sound = new Sound();
 			_sound.addEventListener( SampleDataEvent.SAMPLE_DATA, sampleData );
+//      _sound.addEventListener( Event.COMPLETE, complete );
       _sound.play();
 		}
 
@@ -127,6 +128,7 @@ package components
 
 			//-- INCREASE SOUND POSITION
 			_position += scaledBlockSize;
+      if(_position >= _mp3.length * 44.1) _position = 0;
 		}
 	}
 }
