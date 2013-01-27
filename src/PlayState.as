@@ -13,9 +13,8 @@ package
     public static const HUE_RATE:Number = 100;
     public static const MUSIC_DEATH_RATE:Number = 0.75;
 
-    public static const MAX_SINK_RATE:Number = 5;
+    public static const MAX_SINK_RATE:Number = 7;
 
-    private var palette:FlxSprite;
     private var sin:Number = 0;
 
     private var pitchRate:Number = 0;
@@ -28,6 +27,8 @@ package
     private var background:FlxSprite;
 
     private var starting:Boolean = true;
+
+    private var score:uint = 0;
 
     override public function create():void {
       FlxG.camera.x = -32;
@@ -50,6 +51,7 @@ package
       if(G.started) FlxG.flash(0xff000000);
 
       G.started = true;
+      G.hueShift = 0;
     }
 
     override public function update():void {
@@ -92,7 +94,7 @@ package
     override public function draw():void {
       super.draw();
 
-      //aberrateCamera(FlxG.camera);
+      aberrateCamera(FlxG.camera);
     }
 
     protected function aberrateCamera(camera:FlxCamera):void {
