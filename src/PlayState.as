@@ -9,11 +9,10 @@ package
 
   public class PlayState extends FlxState
   {
-    public static const SIN_RATE:Number = 0;
-    public static const HUE_RATE:Number = 50;
+    public static const SIN_RATE:Number = 10;
+    public static const HUE_RATE:Number = 100;
 
     private var palette:FlxSprite;
-    private var dingus:FlxSprite;
     private var sin:Number = 0;
     private var hue:Number = 0;
 
@@ -25,22 +24,22 @@ package
     private var shiftedHSB:Array = [];
     
     private var player:Player;
+    private var terrain:TerrainGroup;
 
     override public function create():void {
-      dingus = new FlxSprite();
-      dingus.loadGraphic(Assets.CMY);
-      dingus.scale = new FlxPoint(4,4);
-      dingus.x = dingus.width*1.5;
-      dingus.y = dingus.height*1.5;
-      add(dingus);
+      FlxG.camera.x = -32;
+      FlxG.camera.y = -32;
 
       player = new Player(0,0);
       add(player);
 
+      terrain = new TerrainGroup();
+      add(terrain);
+
       pitcher = new MP3Pitch(Assets.Music);
 
       palette = new FlxSprite();
-      palette.loadGraphic(Assets.CMY);
+      palette.loadGraphic(Assets.Terrain);
       for(var x:int = 0; x < palette.width; x++) {
         for(var y:int = 0; y < palette.height; y++) {
           var pixel:uint = palette.pixels.getPixel32(x, y);
@@ -58,10 +57,18 @@ package
     }
 
     override public function update():void {
-      pitcher.rate -= 0.0005;
+      pitcher.rate = 2;
       updateEffects();
 
       super.update();
+
+      player.resetFlags();
+
+      FlxG.collide(player, terrain, function(player:Player, tile:FlxObject):void {
+        if(tile.touching & FlxObject.UP) {
+          player.setCollidesWith(Player.WALL_UP);
+        }
+      });
     }
 
     protected function updateEffects():void {
@@ -80,17 +87,6 @@ package
 
       hueShiftCamera(FlxG.camera);
       aberrateCamera(FlxG.camera);
-      /*
-        var blueBuffer:BitmapData = new BitmapData(FlxG.camera.width, FlxG.camera.height, true, 0x00000000);
-        blueBuffer.copyChannel(buffer, sourceRect, new Point(4,5), BitmapDataChannel.ALPHA, BitmapDataChannel.ALPHA); 
-        blueBuffer.copyChannel(buffer, sourceRect, new Point(4,5), BitmapDataChannel.BLUE, BitmapDataChannel.BLUE); 
-        FlxG.camera.buffer.draw(blueBuffer, null, null, "add");
-
-        var greenBuffer:BitmapData = new BitmapData(FlxG.camera.width, FlxG.camera.height, true, 0x00000000);
-        greenBuffer.copyChannel(buffer, sourceRect, new Point(3,4), BitmapDataChannel.ALPHA, BitmapDataChannel.ALPHA); 
-        greenBuffer.copyChannel(buffer, sourceRect, new Point(3,4), BitmapDataChannel.GREEN, BitmapDataChannel.GREEN); 
-        FlxG.camera.buffer.draw(greenBuffer, null, null, "add");
-      */
     }
 
     protected function hueShiftCamera(camera:FlxCamera):void {
@@ -99,12 +95,11 @@ package
       for(var row:uint = 0; row < camera.height; row++) {
         for(var column:uint = 0; column < camera.width; column++) {
           colorIndex = colors.indexOf(camera.buffer.getPixel32(column,row));
-					if(colorIndex > -1) {
-						camera.buffer.setPixel32(column,row,shiftedColors[colorIndex]);
-					}
-				}
-			}
-      //
+          if(colorIndex > -1) {
+            camera.buffer.setPixel32(column,row,shiftedColors[colorIndex]);
+          }
+        }
+      }
     }
 
     protected function aberrateCamera(camera:FlxCamera):void {
@@ -118,8 +113,8 @@ package
       var channels:Array = [BitmapDataChannel.RED, BitmapDataChannel.BLUE, BitmapDataChannel.GREEN];
       var offsets:Object = {};
       offsets[BitmapDataChannel.RED] = new Point(0,0);
-      offsets[BitmapDataChannel.BLUE] = new Point(3,0);
-      offsets[BitmapDataChannel.GREEN] = new Point(1,3);
+      offsets[BitmapDataChannel.BLUE] = new Point(1,0);
+      offsets[BitmapDataChannel.GREEN] = new Point(0,1);
      
       for each(var channel:uint in channels) { 
         colorBuffer = new BitmapData(camera.width, camera.height, true, 0x00000000);       

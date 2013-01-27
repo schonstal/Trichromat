@@ -12,8 +12,10 @@ package
     public static const WALL_UP:uint = 1 << 3;
     public static var WALL:uint = WALL_LEFT|WALL_RIGHT|WALL_UP;
 
+    public static const RUN_SPEED:Number = 100;
+
     private var _speed:FlxPoint;
-    private var _gravity:Number = 800; 
+    private var _gravity:Number = 600; 
 
     private var _jumpPressed:Boolean = false;
     private var _grounded:Boolean = false;
@@ -39,7 +41,7 @@ package
 
     public function Player(X:Number,Y:Number):void {
       super(X,Y);
-      loadGraphic(Assets.Player, true, true, 20, 24);
+      loadGraphic(Assets.Player, true, true, 12, 12);
       addAnimation("idle", [0, 0, 0, 0, 0, 0, 1, 2, 3], 15, true);
       addAnimation("run", [6, 7, 8, 9, 10, 11], 15, true);
       addAnimation("run from landing", [8, 9, 10, 11, 6, 7], 15, true);
@@ -49,20 +51,20 @@ package
       addAnimation("jump land", [15], 15, false);
       play("idle");
 
-      width = 14;
-      height = 16;
+      width = 8;
+      height = 8;
 
-      offset.x = 5;
-      offset.y = 8;
+      offset.x = 2;
+      offset.y = 2;
 
       _speed = new FlxPoint();
-      _speed.y = 250;
-      _speed.x = 1000;
+      _speed.y = 215;
+      _speed.x = 800;
 
       acceleration.y = _gravity;
 
-      maxVelocity.y = 400;
-      maxVelocity.x = 300;
+      maxVelocity.y = 325;
+      maxVelocity.x = RUN_SPEED;
     }
 
     public function init():void {
@@ -105,13 +107,13 @@ package
         if(FlxG.keys.justPressed("W") || FlxG.keys.justPressed("UP")) {
           _jumpPressed = true;
           jumpTimer = 0;
+          _grounded = false;
         }
         if(jumpTimer > jumpThreshold) {
           _jumpPressed = false;
         }
 
         if(collidesWith(WALL_UP)) {
-          maxVelocity.x = 200;
           if(!_grounded) {
             play("jump land");
             _landing = true;
@@ -190,6 +192,9 @@ package
           acceleration.y = _gravity;
       }
       super.update();
+
+      if(x < 0) x = FlxG.camera.width - width;
+      if(x + width > FlxG.camera.width) x = 0;
     }
 
     public function jumpPressed():Boolean {
