@@ -12,6 +12,14 @@ package
     public var y:Number = FlxG.height - 16;
 
     public function LavaGroup():void {
+      var glow:FlxSprite = new FlxSprite(0, y);
+      glow.offset.y = 10;
+      glow.alpha = 0.5;
+      glow.blend = "add";
+      glow.loadGraphic(Assets.LavaGlow);
+      glow.scrollFactor.y = 0;
+      add(glow)
+
       for(var i:int = 0; i <= FlxG.width/4; i++) {
         var lava:FlxSprite = new FlxSprite((i*4) - 2, y);
         lava.loadGraphic(Assets.Lava, false, false, 0, 0, true);

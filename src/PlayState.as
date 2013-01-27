@@ -10,12 +10,11 @@ package
   public class PlayState extends FlxState
   {
     public static const SIN_RATE:Number = 10;
-    public static const HUE_RATE:Number = 100;
     public static const MUSIC_DEATH_RATE:Number = 0.75;
+    public static const GEM_SCROLL:Number = 3;
 
-    public static const MAX_SINK_RATE:Number = 5;
+    public static const MAX_SINK_RATE:Number = 7;
 
-    private var palette:FlxSprite;
     private var sin:Number = 0;
 
     private var pitchRate:Number = 0;
@@ -26,8 +25,15 @@ package
     private var terrain:TerrainGroup;
     private var lava:LavaGroup;
     private var background:FlxSprite;
+    private var gems:GemGroup; 
 
     private var starting:Boolean = true;
+
+    private var score:uint = 0;
+
+    public function get hueRate():Number {
+      return score * 5;
+    }
 
     override public function create():void {
       FlxG.camera.x = -32;
@@ -38,22 +44,36 @@ package
       background.scrollFactor.y = 0;
       add(background);
 
-      player = new Player(0,0);
+      var geyser:FlxSprite = new FlxSprite(FlxG.width/2-10, 0);
+      geyser.loadGraphic(Assets.LavaGeyser, true, false, 20, 21);
+      geyser.addAnimation("squirt", [0,1,2,3,4,5], 15);
+      geyser.play("squirt");
+      geyser.scrollFactor.y = 0;
+      add(geyser);
+
+      player = new Player();
       add(player);
+
+      gems = new GemGroup();
+      add(gems);
+      
+      gems.badGem.spawn(28, 27);
+      gems.goodGem.spawn(140, 27);
 
       terrain = new TerrainGroup();
       add(terrain);
-      
+
       lava = new LavaGroup();
       add(lava);
 
       if(G.started) FlxG.flash(0xff000000);
 
       G.started = true;
+      G.hueShift = 0;
     }
 
     override public function update():void {
-      G.hueShift += FlxG.elapsed * HUE_RATE;
+      G.hueShift += FlxG.elapsed * hueRate;
       G.game.rotationZ = Math.sin(sin/8)/2;
       if(starting) {
         G.pitcher.rate += FlxG.elapsed * MUSIC_DEATH_RATE * 2;
@@ -76,6 +96,18 @@ package
           }
         });
 
+        FlxG.overlap(player, gems, function(player:Player, gem:GemSprite):void {
+            if(gem == gems.goodGem) {
+              if(gem.idle) {
+                gem.collect(function():void { gems.spawn(terrain.spawnZones, player); });
+                FlxG.camera.scroll.y += GEM_SCROLL;
+                score++;
+              }
+            } else {
+              player.die();
+            }
+        });
+
         if(player.y + player.height - FlxG.camera.scroll.y >= lava.y + 3) {
           player.die();
         }
@@ -87,6 +119,8 @@ package
           });
         }
       }
+
+      if(FlxG.camera.scroll.y > 0) FlxG.camera.scroll.y = 0;
     }
 
     override public function draw():void {
