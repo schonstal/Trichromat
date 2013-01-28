@@ -10,8 +10,8 @@ package
   {
     public function TerrenceGame() {
       super(176,136,PlayState,4);
-      forceDebugger = true;
-      FlxG.debug = true;
+//      forceDebugger = true;
+//      FlxG.debug = true;
       G.game = this;
       G.pitcher = new MP3Pitch(Assets.Music);
 //      FlxG.visualDebug = true;
