@@ -36,6 +36,7 @@ package
     private var starting:Boolean = true;
 
     private var score:uint = 0;
+    private var scoreSubmitted:Boolean = false;
 
     public function get hueRate():Number {
       return score * 5;
@@ -203,6 +204,11 @@ package
           scoreShadowText.y = 53;
           scoreShadowText.size = 16;
           gameOverGroup.visible = true;
+
+          if(!scoreSubmitted) {
+            G.api.kongregate.stats.submit("Gems", score);
+            scoreSubmitted = true;
+          }
 
           if(FlxG.keys.justPressed("W") || FlxG.keys.justPressed("UP")) {
             FlxG.fade(0xff000000,0.5,function():void {

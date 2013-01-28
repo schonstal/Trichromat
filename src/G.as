@@ -10,6 +10,7 @@ package
         public var _game:FlxGame;
         public var _hueShift:Number;
         public var _mp3Pitch:MP3Pitch;
+        public var _api:KongApi;        
 
         private static var _instance:G = null;
 
@@ -65,6 +66,14 @@ package
 
         public static function set pitcher(value:MP3Pitch):void {
           instance._mp3Pitch = value;
+        }
+
+        public static function get api():KongApi {
+          return instance._api;
+        }
+
+        public static function set api(value:KongApi):void {
+          instance._api = value;
         }
     }
 }

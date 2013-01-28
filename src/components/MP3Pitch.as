@@ -5,6 +5,9 @@ package components
 	import flash.media.Sound;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
+	import flash.media.SoundChannel;
+	import flash.media.SoundTransform;
+  import org.flixel.*;
 
 	/**
 	 * @author Andre Michelle (andre.michelle@gmail.com)
@@ -21,6 +24,9 @@ package components
 		private var _position: Number;
 		private var _rate: Number;
     private var _looped:Boolean = true;
+
+		private var _channel:SoundChannel;
+		private var _transform:SoundTransform;
 		
 		public function MP3Pitch(music:Class, looped:Boolean = true)
 		{
@@ -38,7 +44,9 @@ package components
 			_sound = new Sound();
 			_sound.addEventListener( SampleDataEvent.SAMPLE_DATA, sampleData );
 //      _sound.addEventListener( Event.COMPLETE, complete );
-      _sound.play();
+      _channel = _sound.play();
+
+      _transform = new SoundTransform();
 		}
 
 		public function get rate(): Number
@@ -56,11 +64,16 @@ package components
 
 		private function complete( event: Event ): void
 		{
-			_sound.play();
+			_channel = _sound.play();
 		}
 
 		private function sampleData( event: SampleDataEvent ): void
 		{
+      if(_transform != null)
+        _transform.volume = (FlxG.mute?0:1)*FlxG.volume;
+
+      if(_channel != null)
+        _channel.soundTransform = _transform;
 			//-- REUSE INSTEAD OF RECREATION
 			_target.position = 0;
 			

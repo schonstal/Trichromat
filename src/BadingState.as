@@ -22,6 +22,9 @@ package
 
         override public function update():void
         {
+            if(!G.api)
+              (G.api = FlxG.stage.addChild(new KongApi()) as KongApi).init();
+
             G.hueShift += FlxG.elapsed * 400;
 
             _elapsed += FlxG.elapsed;
