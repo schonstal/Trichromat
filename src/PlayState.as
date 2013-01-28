@@ -28,6 +28,9 @@ package
     private var background:FlxSprite;
     private var gems:GemGroup; 
 
+    private var scoreText:FlxText;
+    private var scoreShadowText:FlxText;
+
     private var starting:Boolean = true;
 
     private var score:uint = 0;
@@ -37,7 +40,7 @@ package
     }
 
     public function get aberrationLevel():Number {
-      return score/25;
+      return score/40;
     }
 
     public function get aberrationAmount():Number {
@@ -94,6 +97,21 @@ package
       lava = new LavaGroup();
       add(lava);
 
+      scoreShadowText = new FlxText(-2, 10, FlxG.width, ""); 
+      scoreShadowText.alignment = "center";
+      scoreShadowText.setFormat("adore");
+      scoreShadowText.color = 0xff000000;
+      scoreShadowText.size = 8;
+      scoreShadowText.scrollFactor.y = 0;
+      add(scoreShadowText);
+
+      scoreText = new FlxText(-2, 9, FlxG.width, "");
+      scoreText.alignment = "center";
+      scoreText.setFormat("adore");
+      scoreText.size = 8;
+      scoreText.scrollFactor.y = 0;
+      add(scoreText);
+
       if(G.started) FlxG.flash(0xff000000);
 
       G.started = true;
@@ -102,9 +120,10 @@ package
 
     override public function update():void {
       G.hueShift += FlxG.elapsed * hueRate;
+      scoreText.text = scoreShadowText.text = "" + score;
 
       sin += FlxG.elapsed * tiltRate;
-      G.game.rotationZ = Math.sin(sin/8)/2;
+      //G.game.rotationZ = Math.sin(sin/8)/2;
 
       if(starting) {
         G.pitcher.rate += FlxG.elapsed * MUSIC_DEATH_RATE * 2;

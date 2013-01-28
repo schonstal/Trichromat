@@ -15,7 +15,8 @@ package
     [Embed(source = "../data/lavaRivulets.png")] public static var LavaRivulets:Class;
 
     [Embed(source = "../data/test.mp3")] public static var Music:Class;
-
     [Embed(source = "../data/jump.mp3")] public static var JumpSound:Class;
+
+    [Embed(source = '../data/adore64.ttf', fontFamily="adore", embedAsCFF="false")] public var Adore:String;
   }
 }
