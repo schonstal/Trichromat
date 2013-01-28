@@ -158,6 +158,7 @@ package org.flixel
     private var baseMap:Array;
     private var mappedImage:BitmapData;
     private var _hueShift:Number = 0;
+    public var ignoreHue = false;
 
     public function get hueShift():Number {
             return _hueShift;
@@ -463,7 +464,7 @@ package org.flixel
 		{
 			super.postUpdate();
 			updateAnimation();
-      hueShift = G.hueShift;
+      if(!ignoreHue) hueShift = G.hueShift;
 		}
 		
 		/**
