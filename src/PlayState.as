@@ -136,7 +136,7 @@ package
       vignette.scrollFactor.y = 0;
       add(vignette);
 
-      if(G.started) FlxG.flash(0xff000000);
+      FlxG.flash(0xff000000);
 
       G.started = true;
       G.hueShift = 0;

@@ -20,9 +20,12 @@ package components
 		
 		private var _position: Number;
 		private var _rate: Number;
+    private var _looped:Boolean = true;
 		
-		public function MP3Pitch(music:Class)
+		public function MP3Pitch(music:Class, looped:Boolean = true)
 		{
+      _looped = looped;
+
 			_target = new ByteArray();
 
 			_mp3 = new music();
@@ -30,7 +33,7 @@ package components
 //			_mp3.load( new URLRequest( "../data/test.mp3" ) );
 
 			_position = 0.0;
-			_rate = 1.0;
+			_rate = 0.0;
 
 			_sound = new Sound();
 			_sound.addEventListener( SampleDataEvent.SAMPLE_DATA, sampleData );
@@ -128,7 +131,7 @@ package components
 
 			//-- INCREASE SOUND POSITION
 			_position += scaledBlockSize;
-      if(_position >= _mp3.length * 44.1) _position = 0;
+      if(_looped && _position >= _mp3.length * 44.1) _position = 0;
 		}
 	}
 }
