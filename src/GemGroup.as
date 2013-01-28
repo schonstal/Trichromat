@@ -22,7 +22,7 @@ package
         if(spawnZones.members[i] is FlxObject &&
             spawnZones.members[i].x > 0 &&
             spawnZones.members[i].y > 0 &&
-            spawnZones.members[i].y < (FlxG.height + FlxG.camera.scroll.y - 20) &&
+            spawnZones.members[i].y < (FlxG.height + FlxG.camera.scroll.y - 28) &&
             !FlxG.overlap(spawnZones.members[i], player)) {
           acceptableZones.push(spawnZones.members[i]);
         }

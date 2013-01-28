@@ -9,17 +9,18 @@ package
 
   public class PlayState extends FlxState
   {
-    public static const SIN_RATE:Number = 10;
     public static const MUSIC_DEATH_RATE:Number = 0.75;
     public static const GEM_SCROLL:Number = 3;
-
-    public static const MAX_SINK_RATE:Number = 7;
+    public static const GEM_PITCH_RATE:Number = 0.5;
+    public static const GLITCH_RATE:Number = 1;
+    public static const GLITCH_PITCH:Number = 0.4;
 
     private var sin:Number = 0;
 
-    private var pitchRate:Number = 0;
+    private var currentPitch:Number = 0;
+    private var glitchTimer = 0;
 
-    private var sinkRate:Number = 2;
+    private var glitching:Boolean = false;
 
     private var player:Player;
     private var terrain:TerrainGroup;
@@ -27,12 +28,35 @@ package
     private var background:FlxSprite;
     private var gems:GemGroup; 
 
+    private var scoreText:FlxText;
+    private var scoreShadowText:FlxText;
+
     private var starting:Boolean = true;
 
     private var score:uint = 0;
 
     public function get hueRate():Number {
       return score * 5;
+    }
+
+    public function get aberrationLevel():Number {
+      return score/40;
+    }
+
+    public function get aberrationAmount():Number {
+      return glitchTimer;
+    }
+
+    public function get tiltRate():Number {
+      return score/5;
+    }
+
+    public function get pitch():Number {
+      return Math.max(0.5, 1 - score/100);
+    }
+
+    public function get sinkRate():Number {
+      return (score == 0 ? 0 : Math.min(2, score/50 + 1));
     }
 
     override public function create():void {
@@ -51,6 +75,13 @@ package
       geyser.scrollFactor.y = 0;
       add(geyser);
 
+      var river:FlxSprite = new FlxSprite(66, 21);
+      river.loadGraphic(Assets.LavaRivulets, true, false, 33, 28);
+      river.addAnimation("move", [0,1,2], 5);
+      river.play("move");
+      river.scrollFactor.y = 0;
+      add(river);
+
       player = new Player();
       add(player);
 
@@ -66,6 +97,21 @@ package
       lava = new LavaGroup();
       add(lava);
 
+      scoreShadowText = new FlxText(-2, 10, FlxG.width, ""); 
+      scoreShadowText.alignment = "center";
+      scoreShadowText.setFormat("adore");
+      scoreShadowText.color = 0xff000000;
+      scoreShadowText.size = 8;
+      scoreShadowText.scrollFactor.y = 0;
+      add(scoreShadowText);
+
+      scoreText = new FlxText(-2, 9, FlxG.width, "");
+      scoreText.alignment = "center";
+      scoreText.setFormat("adore");
+      scoreText.size = 8;
+      scoreText.scrollFactor.y = 0;
+      add(scoreText);
+
       if(G.started) FlxG.flash(0xff000000);
 
       G.started = true;
@@ -74,7 +120,11 @@ package
 
     override public function update():void {
       G.hueShift += FlxG.elapsed * hueRate;
-      G.game.rotationZ = Math.sin(sin/8)/2;
+      scoreText.text = scoreShadowText.text = "" + score;
+
+      sin += FlxG.elapsed * tiltRate;
+      //G.game.rotationZ = Math.sin(sin/8)/2;
+
       if(starting) {
         G.pitcher.rate += FlxG.elapsed * MUSIC_DEATH_RATE * 2;
         if(G.pitcher.rate >= 1) {
@@ -102,11 +152,22 @@ package
                 gem.collect(function():void { gems.spawn(terrain.spawnZones, player); });
                 FlxG.camera.scroll.y += GEM_SCROLL;
                 score++;
+                glitching = true;
               }
             } else {
               player.die();
             }
         });
+
+        if(glitching) {
+          glitchTimer += FlxG.elapsed * GLITCH_RATE;
+          G.pitcher.rate = pitch + (Math.sin(-glitchTimer * Math.PI) * GLITCH_PITCH);
+        }
+        if(glitchTimer >= 1) {
+          glitchTimer = 0;
+          glitching = false;
+          G.pitcher.rate = pitch;
+        }
 
         if(player.y + player.height - FlxG.camera.scroll.y >= lava.y + 3) {
           player.die();
@@ -126,11 +187,10 @@ package
     override public function draw():void {
       super.draw();
 
-      //aberrateCamera(FlxG.camera);
+      aberrateCamera(FlxG.camera);
     }
 
     protected function aberrateCamera(camera:FlxCamera):void {
-      sin += FlxG.elapsed * SIN_RATE;
       var buffer:BitmapData = camera.buffer.clone();
       camera.fill(0xff000000);
 
@@ -139,13 +199,21 @@ package
       var colorBuffer:BitmapData;
       var channels:Array = [BitmapDataChannel.RED, BitmapDataChannel.BLUE, BitmapDataChannel.GREEN];
       var offsets:Object = {};
-      offsets[BitmapDataChannel.RED] = new Point(0,0);
-      offsets[BitmapDataChannel.BLUE] = new Point(3,0);
-      offsets[BitmapDataChannel.GREEN] = new Point(1,3);
+      offsets[BitmapDataChannel.RED] = new Point(
+        1.5 * (aberrationLevel + aberrationAmount),
+        0);
+      offsets[BitmapDataChannel.BLUE] = new Point(
+        -2 * (aberrationLevel + aberrationAmount), 
+        2 * (aberrationLevel + aberrationAmount));
+      offsets[BitmapDataChannel.GREEN] = new Point(
+        -2 * (aberrationLevel + aberrationAmount),
+        -2 * (aberrationLevel + aberrationAmount));
      
       for each(var channel:uint in channels) { 
         colorBuffer = new BitmapData(camera.width, camera.height, true, 0x00000000);
-        var point:Point = new Point(Math.sin(G.hueShift *  0.0175)*2 + offsets[channel].x, Math.cos(G.hueShift *  0.0175)*2 + offsets[channel].y);
+        var point:Point = new Point(
+          (Math.sin(G.hueShift *  0.0175) * (aberrationAmount + aberrationLevel)) + offsets[channel].x,
+          (Math.cos(G.hueShift *  0.0175) * (aberrationAmount + aberrationLevel)) + offsets[channel].y);
          
         colorBuffer.copyChannel(buffer,
           sourceRect,
