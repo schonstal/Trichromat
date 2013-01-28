@@ -173,12 +173,19 @@ package
           player.die();
         }
       } else {
-        G.pitcher.rate -= FlxG.elapsed * MUSIC_DEATH_RATE;
         if(player.y > FlxG.camera.height - FlxG.camera.scroll.y) {
-          FlxG.fade(0xff000000,0.5,function():void {
-            FlxG.switchState(new PlayState());
-          });
+          scoreText.y = 53;
+          scoreText.size = 16;
+          scoreShadowText.y = 55;
+          scoreShadowText.size = 16;
+
+          if(FlxG.keys.justPressed("W") || FlxG.keys.justPressed("UP")) {
+            FlxG.fade(0xff000000,0.5,function():void {
+              FlxG.switchState(new PlayState());
+            });
+          }
         }
+        G.pitcher.rate -= FlxG.elapsed * MUSIC_DEATH_RATE;
       }
 
       if(FlxG.camera.scroll.y > 0) FlxG.camera.scroll.y = 0;
