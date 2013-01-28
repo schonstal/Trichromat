@@ -133,6 +133,7 @@ package
       var vignette:FlxSprite = new FlxSprite();
       vignette.loadGraphic(Assets.Vignette);
       vignette.ignoreHue = true;
+      vignette.scrollFactor.y = 0;
       add(vignette);
 
       if(G.started) FlxG.flash(0xff000000);
