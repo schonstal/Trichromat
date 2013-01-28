@@ -14,6 +14,10 @@ package
     [Embed(source = "../data/lavaGeyser.png")] public static var LavaGeyser:Class;
     [Embed(source = "../data/lavaRivulets.png")] public static var LavaRivulets:Class;
 
+    [Embed(source = "../data/gameOver.png")] public static var GameOver:Class;
+    [Embed(source = "../data/gameOverShading.png")] public static var GameOverShading:Class;
+    [Embed(source = "../data/vignette.png")] public static var Vignette:Class;
+
     [Embed(source = "../data/test.mp3")] public static var Music:Class;
     [Embed(source = "../data/jump.mp3")] public static var JumpSound:Class;
 

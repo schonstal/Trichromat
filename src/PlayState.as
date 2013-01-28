@@ -31,6 +31,8 @@ package
     private var scoreText:FlxText;
     private var scoreShadowText:FlxText;
 
+    public var gameOverGroup:FlxGroup;
+
     private var starting:Boolean = true;
 
     private var score:uint = 0;
@@ -97,6 +99,22 @@ package
       lava = new LavaGroup();
       add(lava);
 
+      gameOverGroup = new FlxGroup();
+
+      var gameOverSprite:FlxSprite = new FlxSprite();
+      gameOverSprite.loadGraphic(Assets.GameOver);
+      gameOverSprite.scrollFactor.y = 0;
+
+      var gameOverShadingSprite:FlxSprite = new FlxSprite();
+      gameOverShadingSprite.loadGraphic(Assets.GameOverShading);
+      gameOverShadingSprite.ignoreHue = true;
+      gameOverShadingSprite.scrollFactor.y = 0;
+
+      gameOverGroup.add(gameOverShadingSprite);
+      gameOverGroup.add(gameOverSprite);
+      gameOverGroup.visible = false;
+      add(gameOverGroup);
+
       scoreShadowText = new FlxText(-2, 10, FlxG.width, ""); 
       scoreShadowText.alignment = "center";
       scoreShadowText.setFormat("adore");
@@ -111,6 +129,11 @@ package
       scoreText.size = 8;
       scoreText.scrollFactor.y = 0;
       add(scoreText);
+
+      var vignette:FlxSprite = new FlxSprite();
+      vignette.loadGraphic(Assets.Vignette);
+      vignette.ignoreHue = true;
+      add(vignette);
 
       if(G.started) FlxG.flash(0xff000000);
 
@@ -174,10 +197,11 @@ package
         }
       } else {
         if(player.y > FlxG.camera.height - FlxG.camera.scroll.y) {
-          scoreText.y = 53;
+          scoreText.y = 51;
           scoreText.size = 16;
-          scoreShadowText.y = 55;
+          scoreShadowText.y = 53;
           scoreShadowText.size = 16;
+          gameOverGroup.visible = true;
 
           if(FlxG.keys.justPressed("W") || FlxG.keys.justPressed("UP")) {
             FlxG.fade(0xff000000,0.5,function():void {
