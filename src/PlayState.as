@@ -15,10 +15,7 @@ package
     public static const GLITCH_RATE:Number = 1;
     public static const GLITCH_PITCH:Number = 0.4;
 
-    public static const MAX_SINK_RATE:Number = 7;
-
     private var sin:Number = 0;
-    private var sinkRate:Number = 2;
 
     private var currentPitch:Number = 0;
     private var glitchTimer = 0;
@@ -36,11 +33,11 @@ package
     private var score:uint = 0;
 
     public function get hueRate():Number {
-      return score * 7.5;
+      return score * 5;
     }
 
     public function get aberrationLevel():Number {
-      return score/20;
+      return score/25;
     }
 
     public function get aberrationAmount():Number {
@@ -52,7 +49,11 @@ package
     }
 
     public function get pitch():Number {
-      return 1 - score/100;
+      return Math.max(0.5, 1 - score/100);
+    }
+
+    public function get sinkRate():Number {
+      return (score == 0 ? 0 : Math.min(2, score/50 + 1));
     }
 
     override public function create():void {
